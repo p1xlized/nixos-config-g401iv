@@ -47,6 +47,13 @@ hardware.enableRedistributableFirmware = true;
       "bluez5.enable-hw-volume" = true;
     };
   };
+  # zram
+  zramSwap = {
+      enable = true;
+      algorithm = "zstd";
+      priority = 100;
+      memoryPercent = 100;
+    };
 # pro audio config
   security.pam.loginLimits = [
     { domain = "@audio"; item = "rtprio"; type = "-"; value = "99"; }

@@ -2,11 +2,12 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ./modules/hardware.nix
     ./modules/desktop.nix
+    ./modules/dev.nix
     ./modules/gaming.nix
-    # Add ./modules/polkit.nix if you moved the MATE agent there
+    ./modules/hardware.nix
+    ./modules/polkit.nix
+    ./hardware-configuration.nix
   ];
 
   # --- NIX SETTINGS & OPTIMIZATION ---
@@ -84,5 +85,6 @@
     fzf
     lsd
     starship
+  ];
   system.stateVersion = "25.11";
 }
