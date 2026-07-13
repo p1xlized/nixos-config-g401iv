@@ -13,6 +13,7 @@
       modules = [
         ./configuration.nix
         nixos-hardware.nixosModules.asus-zephyrus-ga401
+
       ];
     };
   };

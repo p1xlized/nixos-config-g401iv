@@ -18,7 +18,7 @@
     extra-trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" ];
     extra-substituters = [ "https://devenv.cachix.org" ];
   };
-
+programs.nix-ld.enable = true;
   # Automatic Garbage Collection (keeps your SSD lean)
   nix.gc = {
     automatic = true;
@@ -61,7 +61,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "Alexandru Paduret";
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" "podman" ];
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "podman" "input"];
     shell = pkgs.fish;
   };
 

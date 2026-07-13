@@ -1,33 +1,43 @@
-{ config, pkgs,lib, ... }: {
+{ config, pkgs, lib, ... }: {
   services.xserver.videoDrivers = [ "nvidia" ];
+
   hardware.nvidia = {
-      open = true;
-      modesetting.enable = lib.mkDefault true;
+    open = true;
+    modesetting.enable = lib.mkDefault true;
 
+    prime = {
+      amdgpuBusId = "PCI:4:0:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
 
-      prime = {
-        amdgpuBusId = "PCI:4:0:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
+  # Upgrade to the latest kernel to get the built-in asus-armoury module
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  services = {
+    asusd = {
+      enable = true;
+
     };
 
-    services = {
-      asusd = {
-        enable = true;
-      };
+    udev.extraHwdb = ''
+      evdev:name:*:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+        KEYBOARD_KEY_ff31007c=f20    # fixes mic mute button
+        KEYBOARD_KEY_ff3100b2=home   # Set fn+LeftArrow as Home
+        KEYBOARD_KEY_ff3100b3=end    # Set fn+RightArrow as End
+    '';
+  };
 
-      udev.extraHwdb = ''
-        evdev:name:*:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
-         KEYBOARD_KEY_ff31007c=f20    # fixes mic mute button
-         KEYBOARD_KEY_ff3100b2=home   # Set fn+LeftArrow as Home
-         KEYBOARD_KEY_ff3100b3=end    # Set fn+RightArrow as End
-      '';
-    };
   services.supergfxd.enable = true;
-systemd.services.supergfxd.path = [ pkgs.pciutils ];
+  systemd.services.supergfxd.path = [ pkgs.pciutils ];
 
-# bluetooth
-hardware.enableRedistributableFirmware = true;
+  # Ensure the GUI tool is available in your system packages
+  environment.systemPackages = [
+    pkgs.asusctl
+  ];
+
+  # bluetooth
+  hardware.enableRedistributableFirmware = true;
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -47,14 +57,16 @@ hardware.enableRedistributableFirmware = true;
       "bluez5.enable-hw-volume" = true;
     };
   };
+
   # zram
   zramSwap = {
-      enable = true;
-      algorithm = "zstd";
-      priority = 100;
-      memoryPercent = 100;
-    };
-# pro audio config
+    enable = true;
+    algorithm = "zstd";
+    priority = 100;
+    memoryPercent = 100;
+  };
+
+  # pro audio config
   security.pam.loginLimits = [
     { domain = "@audio"; item = "rtprio"; type = "-"; value = "99"; }
     { domain = "@audio"; item = "memlock"; type = "-"; value = "unlimited"; }
